@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Karthick | Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --paper: #111010;
+      --gold: #c9a84c;
+      --gold-dim: #8a6f2e;
+      --cream: #e8dcc8;
+      --smoke: #6b6560;
+      --red: #8b2020;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'IBM Plex Mono', monospace;
+      min-height: 100vh;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.15s ease;
+      mix-blend-mode: difference;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.08s ease;
+      opacity: 0.5;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.4;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 0 8vw;
+      position: relative;
+      border-bottom: 1px solid #222;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0;
+      width: 40vw; height: 100%;
+      background: radial-gradient(ellipse at 80% 40%, rgba(201,168,76,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.4s forwards;
+    }
+
+    .hero-name span {
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-sub {
+      margin-top: 2.5rem;
+      font-size: clamp(0.8rem, 1.5vw, 1rem);
+      color: var(--smoke);
+      max-width: 420px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.6s forwards;
+    }
+
+    .hero-sub strong {
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 8vw;
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      color: var(--smoke);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s ease 1.2s forwards;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .scroll-hint::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 1px;
+      background: var(--smoke);
+      animation: lineGrow 1s ease 1.4s both;
+    }
+
+    /* Under Construction Banner */
+    .construction {
+      padding: 5rem 8vw;
+      border-bottom: 1px solid #1a1a1a;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .construction::before {
+      content: 'CLASSIFIED';
+      position: absolute;
+      right: -2rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      font-weight: 900;
+      color: var(--red);
+      opacity: 0.04;
+      letter-spacing: 0.1em;
+      pointer-events: none;
+    }
+
+    .case-file {
+      border: 1px solid #222;
+      border-left: 3px solid var(--gold);
+      padding: 2.5rem 3rem;
+      max-width: 680px;
+      position: relative;
+      background: rgba(201,168,76,0.02);
+    }
+
+    .case-file::before {
+      content: 'CASE FILE #001';
+      position: absolute;
+      top: -0.6rem;
+      left: 2rem;
+      background: var(--bg);
+      padding: 0 0.8rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      color: var(--gold);
+    }
+
+    .case-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      color: var(--cream);
+    }
+
+    .case-body {
+      font-size: 0.85rem;
+      color: var(--smoke);
+      line-height: 2;
+    }
+
+    .case-body em {
+      color: var(--cream);
+      font-style: normal;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.8rem;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold-dim);
+      padding: 0.4rem 1rem;
+    }
+
+    .status-dot {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 2s ease infinite;
+    }
+
+    /* Projects */
+    .projects {
+      padding: 6rem 8vw;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 3.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 80px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5px;
+      background: #1a1a1a;
+      border: 1px solid #1a1a1a;
+    }
+
+    .project-card {
+      background: var(--bg);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .project-card:hover {
+      background: #111;
+    }
+
+    .project-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .project-number {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--gold-dim);
+      margin-bottom: 1.5rem;
+    }
+
+    .project-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--cream);
+      margin-bottom: 1rem;
+      transition: color 0.3s;
+    }
+
+    .project-card:hover .project-name {
+      color: var(--gold);
+    }
+
+    .project-desc {
+      font-size: 0.78rem;
+      color: var(--smoke);
+      line-height: 1.9;
+      margin-bottom: 2rem;
+    }
+
+    .project-link {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      transition: gap 0.3s;
+    }
+
+    .project-card:hover .project-link {
+      gap: 1rem;
+    }
+
+    .project-link::after {
+      content: '→';
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 8vw;
+      border-top: 1px solid #1a1a1a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--gold);
+    }
+
+    .footer-copy {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--smoke);
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.3; }
+    }
+
+    @keyframes lineGrow {
+      from { width: 0; }
+      to   { width: 40px; }
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 0 6vw; }
+      .construction, .projects { padding: 4rem 6vw; }
+      footer { padding: 2rem 6vw; }
+      .case-file { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <p class="tag">// Full Stack Developer &nbsp;·&nbsp; Flutter Developer</p>
+    <h1 class="hero-name">
+      Iam
+      <span>Karthick.</span>
+    </h1>
+    <p class="hero-sub">
+      I build things for the web.<br/>
+      <strong>The portfolio?</strong> Still under investigation.<br/>
+      But the evidence is piling up — see below. 🕵️
+    </p>
+    <div class="scroll-hint">Scroll to investigate</div>
+  </section>
+
+  <!-- Under Construction -->
+  <section class="construction">
+    <div class="case-file reveal">
+      <h2 class="case-title">Portfolio is<br/>getting cooked.</h2>
+      <p class="case-body">
+        The full portfolio is currently <em>under active construction</em>.<br/>
+        Evidence of my work is scattered below — feel free to investigate.<br/>
+        Return to this page later for the full picture.
+      </p>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        In progress — ETA: Soon™
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="projects">
+    <p class="section-label reveal">Exhibits</p>
+    <div class="project-grid">
+
+      <a class="project-card reveal" href="https://iam-sherlock.github.io/prompt-city/" target="_blank" rel="noopener">
+        <p class="project-number">EXHIBIT 01</p>
+        <h3 class="project-name">Prompt City</h3>
+        <p class="project-desc">A React + TypeScript web app. The case is open — click to investigate.</p>
+        <span class="project-link">Visit project</span>
+      </a>
+
+      <a class="project-card reveal" href="https://iam-sherlock.github.io/ilovetyping/" target="_blank" rel="noopener">
+        <p class="project-number">EXHIBIT 02</p>
+        <h3 class="project-name">I Love Typing</h3>
+        <p class="project-desc">A typing project forged with passion. Every keystroke tells a story.</p>
+        <span class="project-link">Visit project</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <span class="footer-name">Iam-Sherlock</span>
+    <span class="footer-copy">© 2025 Karthick · The game is afoot.</span>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx - 5 + 'px';
+      cursor.style.top  = my - 5 + 'px';
+    });
+
+    function animateRing() {
+      rx += (mx - rx - 18) * 0.12;
+      ry += (my - ry - 18) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(2.5)');
+      el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 120);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
